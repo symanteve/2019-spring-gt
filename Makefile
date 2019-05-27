@@ -8,8 +8,8 @@ all: $(EXEC)
 # executable (using static library)
 # need libfakemn.a (compile from the Makefile of project root)
 $(EXEC): %.out: %.cc
-	g++ -o $@ $< -I$(LIBS) -g3 -L. -l$(OBJS) $(CXXFLAGS)
+	g++ -o $@ $< -I$(LIBS) -L. -l$(OBJS) $(CXXFLAGS)
 
 # reset & clean
 clean: 
-	rm -rf $(EXEC)
+	rm -rf $(EXEC) *.png
