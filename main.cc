@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <queue>
 #include <fstream>
 #include <algorithm>
 #include "network_manager.h"
@@ -14,14 +15,76 @@ using namespace std;
 
 // create NetworkManager first
 NetworkManager *nm = new NetworkManager();
-NetworkManager *nm1 = new NetworkManager();
 
 void draw(NetworkManager *pic){
 	Gplot *gp = new Gplot();
     gp->gp_add(pic->elist);
     gp->gp_dump(true);
     gp->gp_export("plot");
-};
+}
+
+void BFS(NetworkManager* nm, const vector<string> &NN, string src, string dst){
+	queue<vector<string> > q;
+	vector<string> one_path;
+	vector<Edge *> temp_path;
+	vector<vector<Edge*> > pathss;
+	bool isNotVisited = true;
+	vector<string>  adjancy;
+
+
+
+	one_path.push_back(src);
+	q.push(one_path);
+//	vector<vector<string> > adjancy(NN.size(), vector<string>());
+	Edge* temp_edge;
+
+	while(!q.empty()){
+		one_path = q.front();
+		q.pop();
+		string last = one_path.at(one_path.size()-1);
+
+		//find vertex connect to "last"
+		temp_edge = nm->elist;
+		adjancy.clear();
+		while(temp_edge != NULL){
+			if(temp_edge->head->name == last){
+				adjancy.push_back(temp_edge->tail->name);
+			}
+			temp_edge = temp_edge->next;
+		}
+		if (last == dst){
+			cout << "one_path :" << endl;
+				for(auto & e : one_path)
+					cout << e << ' ';
+			cout << endl;
+			for(int i = 0; i < one_path.size() - 1; ++i){
+				temp_edge = nm->get_edge(one_path.at(i), one_path.at(i+1));
+				temp_path.push_back(temp_edge);
+			}
+			pathss.push_back(temp_path);
+			temp_path.clear();
+		}
+		for (int i = 0; i < adjancy.size(); ++i){
+			for (int j = 0; j < one_path.size(); ++j){
+				if (one_path.at(j) == adjancy.at(i))
+					isNotVisited = false;
+					break;
+			}
+			if(isNotVisited){
+				vector<string> new_one_path(one_path);
+				new_one_path.push_back(adjancy.at(i));
+				q.push(new_one_path);
+			}
+			isNotVisited = true;
+		}
+	}
+			cout << "pathss :" << endl;
+			for(auto & e : pathss){
+					for(auto & ee : e)
+					cout << ee->head->name << ' ' << ee->tail->name << "   ";
+cout << endl;
+			}
+}
 
 vector<int> dijkstra(Path *path){
 	vector<int> length(path->paths.size(), 0);
@@ -33,7 +96,7 @@ vector<int> dijkstra(Path *path){
 		}
 	}
 	return length;//*min_element(length.begin(), length.end());
-}; 
+} 
 
 vector<string> node_name(NetworkManager* nm)
 {
@@ -44,7 +107,7 @@ vector<string> node_name(NetworkManager* nm)
 		a = a->next;
 	}
 	return NN;
-};
+}
 
 vector<pair<string, int> > vertex_degree_check(NetworkManager* nm, const vector<string> &NN){
 	vector<pair<string, int> > vertex_degree(NN.size());
@@ -62,7 +125,7 @@ vector<pair<string, int> > vertex_degree_check(NetworkManager* nm, const vector<
 		EE = nm->elist;
 	}
 	return vertex_degree;
-};
+}
 
 void add_edge_to_be_balanced (NetworkManager* nm, const vector<pair<string, int> > &AA){
 	vector<vector<string> > WOW;
@@ -82,11 +145,11 @@ void add_edge_to_be_balanced (NetworkManager* nm, const vector<pair<string, int>
 	int cba = 0; //the number of permutation
 				 //three unblanced vertices has 6 permutation posible situations
 				 //every time a permutation happen, WOW increase one more size to store paired vertices
+	//permutate the vector to the very front
+	while(prev_permutation(positive.begin(), positive.end()));
 	do{
 			WOW.push_back( vector<string>() );
 			for (int j = 0; j <positive.size(); ++j){
-				//cout << negtive.at(j) << ' ' << positive.at(j) << endl;
-			//	abc = nm->get_edge( nm->get_node(positive.at(j)), nm->get_node(negtive.at(j)) );
 				WOW.at(cba).push_back(negtive.at(j));
 				WOW.at(cba).push_back(positive.at(j));
 			}
@@ -125,43 +188,26 @@ void add_edge_to_be_balanced (NetworkManager* nm, const vector<pair<string, int>
 		tail = WOW.at(nth_pair).at(j*2+1);
 		path->append(nm->elist);
 		path->find_paths(head , tail);
-cout << head <<' '<< tail<< ' ' << endl;
 
 		for (int i = 0; i < path->paths.size(); ++i){
-				cout  << i << endl;
-				cout  <<  ' '  << path->paths.size() << endl;
 			for (int k = 0; k < path->paths.at(i).size(); ++k){
 				dij_vec = dijkstra(path);
 				temp_length += *min_element(dij_vec.begin(), dij_vec.end());
 			}
 			pair_length.push_back(temp_length);
   		}
-			cout << "done" << endl;
 
 		int _nth_pair = distance(pair_length.begin(), max_element(pair_length.begin(), pair_length.end()));
-			cout << _nth_pair << endl;
-cout << path->paths.size() << endl;
 
 
 		for(int l = 0; l < path->paths.at(_nth_pair).size(); ++l){
 			head = path->paths.at(_nth_pair).at(l)->head->name;
 			tail = path->paths.at(_nth_pair).at(l)->tail->name;
-			cout << head <<' '<< tail<< ' ' << l << endl;
 			nm->connect(head , tail);
-			//nm->setlink(head , tail, 1, 0);
 		}
-		//	cout << head <<' '<< tail<< ' ' << dijkstra(path)<< endl;
 		pair_length.clear();
 	}
-	//
-
-//	for (auto &e : WOW){
-//		for (auto &ee : e){
-//			cout << ee << " ";
-//		}
-//		cout << endl;
-//	}
-};
+}
 
 void hierholzer(NetworkManager* nm, const vector<string> &NN){
 	vector<string>  		subtour;
@@ -187,14 +233,12 @@ void hierholzer(NetworkManager* nm, const vector<string> &NN){
 	int aaa = edge.size();
 	while(aaa >= 0 ){
 		aaa--;
-		//		cout<< current_node <<endl;
 	tour.push_back(current_node);
 
 		for(int i = 0; i < edge.size(); ++i){
 			if(edge.at(i).first == current_node){
 				current_node = edge.at(i).second;
 				subtour.push_back(current_node);
-				cout << edge.at(i).first << ' ' << edge.at(i).second << endl;
 				edge.erase(edge.begin()+i);
 				if_dead_end = false;
 				break;
@@ -213,84 +257,27 @@ void hierholzer(NetworkManager* nm, const vector<string> &NN){
 				if(if_continue)
 					break;
 				current_node = subtour.at(i);
-				cout << current_node << endl;
 			}
 		}
 		
-//		if(current_node == NN.at(0)){
-//			if(tour.size() != 0)
-//				tour.erase(tour.begin());
-//
-//			tour.insert(tour.begin(), subtour.begin(), subtour.end());	
-//			subtour.clear();
-//		}
 	}	
-//
-
 
 	for(auto&e : tour)
 		cout << e << endl;
-	//	cout << e.first << ' ' << e.second << endl;
-};
+}
 
 int main(int argc, char** argv){
-
 	
-	nm->interpret("test.txt");
+//	nm->interpret("test.txt");
+	nm->interpret(argv[1]);
 	vector<string> NN = node_name(nm);
+	BFS(nm, NN, "0", "3");
 	vector<pair<string, int> > AA = vertex_degree_check(nm, NN);
 	add_edge_to_be_balanced(nm, AA);
-	draw(nm);
-	nm->print_all_e();
-//	cout << nm->get_edge("e","a")->flowval << endl;
-	hierholzer(nm, NN);
+//	nm->print_all_e();
+//	hierholzer(nm, NN);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-	Path *path;
-	path = new Path();
-	path->append(nm->elist);
-	vector<vector<Edge *>> avail_paths = path->find_paths(string("2"), string("1"));
-	path->debug();
-	for(int x=0;x<path->paths.at(0).size();x++)
-	{
-		ofs << path->paths.at(0).at(x)->head->name << ' ' <<  path->paths.at(0).at(x)->tail->name << ' '
-			<< path->paths.at(0).at(x)->cap << ' ' << path->paths.at(0).at(x)-> flowval << endl;
-	}
-	ofs.close();
-	cout << dijkstra(path)<<endl;
-	nm->connect("2", "1");
-	nm->setlink("2", "1", 1, dijkstra(path));
-	nm->print_all_e();
-*/
-//	for(int i = 0; i<3; ++i)
-//		nm1->add_edge(avail_paths.at(0).at(i));
-/*
-	row = avail_paths.begin();
-	nm1->add_edge(*row->begin());
-	
-	for (col = row->begin(); col != row->end(); col++) {
-//		nm1->add_edge(*col);
-	}
-	draw(nm1);
-	*/
-	
-
-    /* start your program */
-
-	
     return 0;
+
 }
