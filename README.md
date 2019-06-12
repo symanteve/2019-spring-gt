@@ -87,23 +87,33 @@ The solutions is based on 5 step:
 4. Insert additional paths
 5. Specifying the Euler Tour
 
-###Check strong connectivity
+### Check strong connectivity
 
 If a graph is not strong connectivity, there is a vertex that at least one other vertex can't reach it.
 Therefor, the graph has no solution to the CCP.
 
-###Find imbalanced nodes
+### Find imbalanced nodes
 
 Imbalanced nodes means that the degree of the node is not 0.
+
 If a node with degree -1, it means the edges flowing in are one less than the edges flowing out.
+
 Usually, the graph has some imbalanced nodes, otherwise the step can be skipped.
+
 For example, we have two nodes a and b with degree 1, and two nodes c and d with degree -1.
+
 The imbalanced nodes can be paired, a node with degree 1 pairs with a node with degree -1.
+
 In the example, there are two possible combinations, which is :
+
 1. a with c and b with d
+
 2. a with d and b with c
+
 The more imbalanced nodes in a graph, the more combinations are needs to find.
+
 The practical method is to use permutation function by STL.
+
 There are no needed to permutate both positive degree and negative degree nodes. One kind is enough.
 
 
