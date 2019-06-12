@@ -133,7 +133,9 @@ The practical method is to use permutation function by STL.
 `next_permutation(_BidirectionalIterator __first, _BidirectionalIterator __last, _Compare __comp)`
 `prev_permutation(_BidirectionalIterator __first, _BidirectionalIterator __last, _Compare __comp)`
 
-There are no needed to permutate both positive degree and negative degree nodes. One kind is enough.
+The positive degree and negative degree nodes are stored in a vector respectively.
+
+There are no needed to permutate both positive degree and negative degree vector. Choose either one is enough.
 
 The final goal is to find the combination with the least weight.
 
