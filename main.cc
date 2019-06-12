@@ -15,13 +15,6 @@ using namespace std;
 // create NetworkManager first
 NetworkManager *nm = new NetworkManager();
 
-void draw(NetworkManager *pic){
-	Gplot *gp = new Gplot();
-    gp->gp_add(pic->elist);
-    gp->gp_dump(true);
-    gp->gp_export("plot");
-}
-
 vector<vector<Edge*> > BFS(NetworkManager* nm, string src, string dst){
 	queue<vector<string> > q;
 	vector<string> one_path;
@@ -72,12 +65,6 @@ vector<vector<Edge*> > BFS(NetworkManager* nm, string src, string dst){
 			isNotVisited = true;
 		}
 	}
-		//	cout << "pathss :" << endl;
-		//	for(auto & e : pathss){
-		//			for(auto & ee : e)
-		//			cout << ee->head->name << ' ' << ee->tail->name << "   ";
-		//			cout << endl;
-		//	}
 	return pathss;
 }
 
@@ -88,18 +75,6 @@ vector<int> dijkstraa(vector<vector<Edge *> > pathss){
 		for(int j = 0; j < pathss.at(i).size(); ++j)
 		{
 			length.at(i) += pathss.at(i).at(j)->flowval;
-		}
-	}
-	return length;//*min_element(length.begin(), length.end());
-} 
-
-vector<int> dijkstra(Path *path){
-	vector<int> length(path->paths.size(), 0);
-	for(int i = 0; i < path->paths.size(); ++i)
-	{
-		for(int j = 0; j < path->paths.at(i).size(); ++j)
-		{
-			length.at(i) += path->paths.at(i).at(j)->flowval;
 		}
 	}
 	return length;//*min_element(length.begin(), length.end());
@@ -150,7 +125,7 @@ void add_edge_to_be_balanced (NetworkManager* nm, const vector<pair<string, int>
 	}
 	
 	int cba = 0; //the number of permutation
-				 //three unblanced vertices has 6 permutation posible situations
+				 //three unbalanced vertices has 6 permutation possible situations
 				 //every time a permutation happen, WOW increase one more size to store paired vertices
 	//permutate the vector to the very front
 	while(prev_permutation(positive.begin(), positive.end()));
@@ -165,8 +140,6 @@ void add_edge_to_be_balanced (NetworkManager* nm, const vector<pair<string, int>
 	}while(next_permutation(positive.begin(), positive.end()));
 
 
-	Path *path;
-	path = new Path();
 	vector<vector<Edge *> > pathss;
 	vector<int> pair_length, dij_vec;
 	int temp_length;
@@ -177,8 +150,6 @@ void add_edge_to_be_balanced (NetworkManager* nm, const vector<pair<string, int>
 		for(int j = 0; j < WOW.at(i).size()/2; ++j){
 			head = WOW.at(i).at(j*2);
 			tail = WOW.at(i).at(j*2+1);
-			//path->append(nm->elist);
-			//path->find_paths(head , tail);
 			pathss = BFS(nm, head, tail);
 			dij_vec = dijkstraa(pathss);
 			temp_length += *min_element(dij_vec.begin(), dij_vec.end());
@@ -190,20 +161,14 @@ void add_edge_to_be_balanced (NetworkManager* nm, const vector<pair<string, int>
 	nth_pair = distance(pair_length.begin(), max_element(pair_length.begin(), pair_length.end()));
 
 	pair_length.clear();
-	//
 	for(int j = 0; j < WOW.at(nth_pair).size()/2; ++j){
 		temp_length = 0;
 		head = WOW.at(nth_pair).at(j*2);
 		tail = WOW.at(nth_pair).at(j*2+1);
-//		path->append(nm->elist);
-//		path->find_paths(head , tail);
 		pathss = BFS(nm, head, tail);
 
-//		for (int i = 0; i < path->paths.size(); ++i){
-//			for (int k = 0; k < path->paths.at(i).size(); ++k){
 		for (int i = 0; i < pathss.size(); ++i){
 			for (int k = 0; k < pathss.at(i).size(); ++k){
-//				dij_vec = dijkstra(path);
 				dij_vec = dijkstraa(pathss);
 				temp_length += *min_element(dij_vec.begin(), dij_vec.end());
 			}
@@ -238,8 +203,7 @@ void hierholzer(NetworkManager* nm, const vector<string> &NN){
 	
 	current_node = NN.at(0);
 	subtour.push_back(current_node);
-//
-	i=0;
+
 	bool if_dead_end = true;
 	bool if_continue = true;
 	int aaa = edge.size();
@@ -283,6 +247,7 @@ void hierholzer(NetworkManager* nm, const vector<string> &NN){
 			cout << endl;
 	}
 }
+
 void path_length(NetworkManager* nm){
 	int length = 0;
 	Edge* EE = nm->elist;
@@ -308,7 +273,6 @@ int main(int argc, char** argv){
 	add_edge_to_be_balanced(nm, AA);
 	hierholzer(nm, NN);
 	path_length(nm);
-
 
     return 0;
 
