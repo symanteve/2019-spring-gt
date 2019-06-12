@@ -85,5 +85,6 @@ The solutions is based on 5 step:
 2. Find imbalanced nodes
 3. Find additional paths
 4. Insert additional paths
-5.Specifying the Euler Tour
+5. Specifying the Euler Tour
+* abdfadsfa
 
