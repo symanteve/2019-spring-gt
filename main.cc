@@ -25,7 +25,6 @@ vector<vector<Edge*> > BFS(NetworkManager* nm, string src, string dst){
 
 	one_path.push_back(src);
 	q.push(one_path);
-//	vector<vector<string> > adjancy(NN.size(), vector<string>());
 	Edge* temp_edge;
 
 	while(!q.empty()){
@@ -77,7 +76,7 @@ vector<int> dijkstraa(vector<vector<Edge *> > pathss){
 			length.at(i) += pathss.at(i).at(j)->flowval;
 		}
 	}
-	return length;//*min_element(length.begin(), length.end());
+	return length;
 } 
 
 vector<string> node_name(NetworkManager* nm)
