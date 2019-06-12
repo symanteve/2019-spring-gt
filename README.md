@@ -80,3 +80,10 @@ Or you can just [DOWNLOAD a pre-built VM images](http://gofile.me/39GpL/XU5tznyO
 > [Guide of environment setting](https://hackmd.io/-5WZQC-1QqOeV3KUX65tEw?view) on Windows.
 
 ## TODO - Your descriptions about solutions/algorithms/results
+The solutions is based on 5 step:
+1. Check for Solvability
+2. Find imbalanced nodes
+3. Find additional paths
+4. Insert additional paths
+5.Specifying the Euler Tour
+
