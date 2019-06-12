@@ -80,6 +80,14 @@ Or you can just [DOWNLOAD a pre-built VM images](http://gofile.me/39GpL/XU5tznyO
 > [Guide of environment setting](https://hackmd.io/-5WZQC-1QqOeV3KUX65tEw?view) on Windows.
 
 ## TODO - Your descriptions about solutions/algorithms/results
+
+Run the program:
+
+```
+$make all
+$./main.out filename
+```
+
 The solutions is based on 5 step:
 1. Check strong connectivity
 2. Find imbalanced nodes
@@ -100,21 +108,60 @@ If a node with degree -1, it means the edges flowing in are one less than the ed
 
 Usually, the graph has some imbalanced nodes, otherwise the step can be skipped.
 
-For example, we have two nodes a and b with degree 1, and two nodes c and d with degree -1.
+### Find additional paths
 
-The imbalanced nodes can be paired, a node with degree 1 pairs with a node with degree -1.
+With the second step result, the imbalanced nodes are collected.
+
+Now, the nodes have to be paired. One positive degree node pairs with one negative node.
+
+Then, we add an additional path to the paired node.
+
+For example, we have two nodes with degree 1, a and b, and two nodes with degree -1 c and d.
+
+A node with degree 1 has to pair with a node with degree -1.
 
 In the example, there are two possible combinations, which is :
 
-1. a with c and b with d
+1. a with c and b with d, called pair 1
 
-2. a with d and b with c
+2. a with d and b with c, called pait 2
 
 The more imbalanced nodes in a graph, the more combinations are needs to find.
 
 The practical method is to use permutation function by STL.
 
+`next_permutation(_BidirectionalIterator __first, _BidirectionalIterator __last, _Compare __comp)`
+`prev_permutation(_BidirectionalIterator __first, _BidirectionalIterator __last, _Compare __comp)`
+
 There are no needed to permutate both positive degree and negative degree nodes. One kind is enough.
 
+The final goal is to find the combination with the least weight.
 
+Say, we add a edge to node a and node c, and the weight of edge is the least weight path of a and c.
+
+We compare the edge added from pair 1 and pair 2, and choose a pair with least additional weight edge.
+
+To find the least weight path, we have to compare every path.
+
+I use **BFS** to do the job.
+
+### Insert additional paths
+
+Replaced the edge of the node pair with existed edge.
+
+With the example, supposed that pair 1 has the least additional weight.
+
+We add two additional edge which are a to c and b to d.
+
+The additional edges are actually represent a path with the least weight between a to c and b to d.
+
+In the step, we add those edges that construct the path to the original graph.
+
+### Specifying the Euler Tour
+
+After the above steps are done, the original graph turns into a Eulerian graph.
+
+An Eulerian graph means that every node in the graph has degree 0, and exist an Euler Tour.
+
+**Hierholzer** algorithm is applied here.
 
