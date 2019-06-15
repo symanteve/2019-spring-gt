@@ -98,7 +98,9 @@ The solutions is based on 5 step:
 ### Check strong connectivity
 
 If a graph is not strong connectivity, there is a vertex that at least one other vertex can't reach it.
-Therefor, the graph has no solution to the CCP.
+Therefore, the graph has no solution to the CCP.
+
+Yet, there would be no non strong conectivity testing graph, so this step is not implemented.
 
 ### Find imbalanced nodes
 
